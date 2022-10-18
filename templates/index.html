@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <title> Home </title>
+    <!-- stylesheets -->
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
+  </head>
+  <body>
+    <div class="header">
+      <a class="navbar-link" href="/"> Home </a>
+      <a class="navbar-link" href="/about"> About </a>
+      <center>
+        <form action="/api/search" method="POST">
+          <input class="input" type="text" placeholder="Headless..." name="query" autofill="off" autocomplete="off">
+        </form>
+      </center>
+    </div>
+
+    <!-- page content -->
+    <center>
+      <!-- no giveaways found message -->
+      {% if data == [] %}
+        <div class="title"> No giveaways found! 🚫 </div>
+      {% else %}
+        <div class="title"> Recent Giveaways 🎉 </div>
+      {% endif %}
+          
+      {% for post in data %}
+        <button class="post" onclick="location.href='https://twitter.com/{{ post['username'] }}/status/{{ post['id'] }}'"t>
+          <div class="post-title"> {{ post['display'] }} <a class="link" href="https://twitter.com/{{ post['username'] }}" target="_blank"> @{{ post['username'] }} </a> </div>
+          <div class="post-description"> {{ post['text'] }} </div>
+          <div class="metrics"> 🔁 {{ post['retweets'] }} ❤️ {{ post['likes'] }} ↩️ {{ post['reply_count'] }} </div>
+          {% if post['prediction'] > 0 %}
+            <div class="metrics"> ✅ {{ post['prediction'] }} Legitimacy Score </div>
+          {% else %}
+            <div class="metrics"> ❌ {{ post['prediction'] }} Legitimacy Score </div>
+          {% endif %}
+          <div class="footer"> ⌛ Posted {{ post['created_ago'][0] }} hours {{ post['created_ago'][1] }} minutes {{ post['created_ago'][2]|int|round }} seconds ago </div>
+        </button>
+      {% endfor %}
+    </center>
+  </body>
+</html>
